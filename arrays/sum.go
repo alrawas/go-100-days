@@ -40,3 +40,6 @@ func SumAllTails(numbersToSum ...[]int) []int {
 	}
 	return sums
 }
+
+// slices point to the same address as the array they were made of
+// use copy() to copy the value to a new address
