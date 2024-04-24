@@ -117,3 +117,10 @@ func TestServer(t *testing.T) {
 		}
 	})
 }
+
+// The problem with context.Values is that it's just an untyped map so you have no type-safety
+// and you have to handle it not actually containing your value.
+// You have to create a coupling of map keys from one module to another
+// and if someone changes something things start breaking.
+//
+// Jack Lindamood says Context.Value should inform, not control
