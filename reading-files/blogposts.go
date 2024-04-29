@@ -42,6 +42,7 @@ func getPost(fileSystem fs.FS, fileName string) (Post, error) {
 const (
 	titleSeparator       = "Title: "
 	descriptionSeparator = "Description: "
+	tagSeparator         = "Tags: "
 )
 
 // This function could never return an error.
@@ -55,13 +56,10 @@ func newPost(postBody io.Reader) (Post, error) {
 		return strings.TrimPrefix(scanner.Text(), tagName)
 	}
 
-	titleLine := readMetaLine(titleSeparator)
-	descriptionLine := readMetaLine(descriptionSeparator)
+	return Post{
+		Title:       readMetaLine(titleSeparator),
+		Description: readMetaLine(descriptionSeparator),
+		Tags:        strings.Split(readMetaLine(tagSeparator), ", "),
+	}, nil
 
-	// postData, err := io.ReadAll(postFile)
-	// if err != nil {
-	// 	return Post{}, nil
-	// }
-
-	return Post{Title: titleLine, Description: descriptionLine}, nil
 }

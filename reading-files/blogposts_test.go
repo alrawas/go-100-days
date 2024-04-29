@@ -17,9 +17,11 @@ func TestNewBlogPosts(t *testing.T) {
 
 	const (
 		firstBody = `Title: Post 1
-Description: Description 1`
+Description: Description 1
+Tags: tdd, go`
 		secondBody = `Title: Post 2
-Description: Description 2`
+Description: Description 2
+Tags: rust, borrow-checker`
 	)
 
 	t.Run("happy path", func(t *testing.T) {
@@ -38,7 +40,7 @@ Description: Description 2`
 			t.Errorf("got %d posts, wanted %d posts", len(posts), len(fs))
 		}
 
-		assertPost(t, posts[0], blogposts.Post{Title: "Post 1", Description: "Description 1"})
+		assertPost(t, posts[0], blogposts.Post{Title: "Post 1", Description: "Description 1", Tags: []string{"tdd", "go"}})
 	})
 
 	t.Run("fs open should fail", func(t *testing.T) {
