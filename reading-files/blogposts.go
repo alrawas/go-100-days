@@ -9,6 +9,16 @@ type Post struct {
 	Tags                     []string
 }
 
-func NewPostsFromFS(fileSystem fs.FS) []Post {
-	return []Post{{}, {}}
+func NewPostsFromFS(fileSystem fs.FS) ([]Post, error) {
+	dirEntry, err := fs.ReadDir(fileSystem, ".")
+
+	if err != nil {
+		return nil, err
+	}
+
+	var posts []Post
+	for range dirEntry {
+		posts = append(posts, Post{})
+	}
+	return posts, nil
 }
