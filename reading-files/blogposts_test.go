@@ -4,6 +4,7 @@ import (
 	blogposts "alrawas/100daysofgo/reading-files"
 	"errors"
 	"io/fs"
+	"reflect"
 	"testing"
 	"testing/fstest"
 )
@@ -12,12 +13,19 @@ import (
 // we not tend to couple the tests with internal implementation
 // and test the exported functions instead
 
-// func Test
 func TestNewBlogPosts(t *testing.T) {
+
+	const (
+		firstBody = `Title: Post 1
+Description: Description 1`
+		secondBody = `Title: Post 2
+Description: Description 2`
+	)
+
 	t.Run("happy path", func(t *testing.T) {
 		fs := fstest.MapFS{
-			"hello-world.md": {Data: []byte("hi")},
-			"hola-world.md":  {Data: []byte("hola")},
+			"hello-world.md": {Data: []byte(firstBody)},
+			"hola-world.md":  {Data: []byte(secondBody)},
 		}
 
 		posts, err := blogposts.NewPostsFromFS(fs)
@@ -29,6 +37,8 @@ func TestNewBlogPosts(t *testing.T) {
 		if len(posts) != len(fs) {
 			t.Errorf("got %d posts, wanted %d posts", len(posts), len(fs))
 		}
+
+		assertPost(t, posts[0], blogposts.Post{Title: "Post 1", Description: "Description 1"})
 	})
 
 	t.Run("fs open should fail", func(t *testing.T) {
@@ -38,6 +48,13 @@ func TestNewBlogPosts(t *testing.T) {
 		}
 	})
 
+}
+
+func assertPost(t *testing.T, got, want blogposts.Post) {
+	t.Helper()
+	if !reflect.DeepEqual(got, want) {
+		t.Errorf("got %+v, want %+v", got, want)
+	}
 }
 
 type StubFailingFS struct {
