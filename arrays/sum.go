@@ -28,11 +28,3 @@ func SumAllTails(numbers ...[]int) []int {
 
 // slices point to the same address as the array they were made of
 // use copy() to copy the value to a new address
-
-func Reduce[T any](collection []T, accumulator func(T, T) T, initialValue T) T {
-	var result = initialValue
-	for _, x := range collection {
-		result = accumulator(result, x)
-	}
-	return result
-}
