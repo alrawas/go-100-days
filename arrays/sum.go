@@ -1,26 +1,11 @@
 package arrays
 
 func Sum(numbers []int) int {
-	// sum := 0
-	// for i := 0; i < 5; i++ {
-	// 	sum += numbers[i]
-	// }
-	// return sum
-	sum := 0
-	for _, number := range numbers {
-		sum += number
-	}
-	return sum
+	add := func(acc, x int) int { return acc + x }
+	return Reduce(numbers, add, 0)
 }
 
 func SumAll(numbersToSum ...[]int) []int {
-	// lengthOfNumbers := len(numbersToSum)
-	// sums := make([]int, lengthOfNumbers)
-
-	// for i, numbers := range numbersToSum {
-	// 	sums[i] = Sum(numbers)
-	// }
-	// return sums
 	var sums []int
 	for _, numbers := range numbersToSum {
 		sums = append(sums, Sum(numbers))
@@ -28,18 +13,26 @@ func SumAll(numbersToSum ...[]int) []int {
 	return sums
 }
 
-func SumAllTails(numbersToSum ...[]int) []int {
-	var sums []int
-	for _, numbers := range numbersToSum {
-		if len(numbers) == 0 {
-			sums = append(sums, 0)
+func SumAllTails(numbers ...[]int) []int {
+	sumTail := func(acc, x []int) []int {
+		if len(x) == 0 {
+			return append(acc, 0)
 		} else {
-			tail := numbers[1:]
-			sums = append(sums, Sum(tail))
+			tail := x[1:]
+			return append(acc, Sum(tail))
 		}
 	}
-	return sums
+
+	return Reduce(numbers, sumTail, []int{})
 }
 
 // slices point to the same address as the array they were made of
 // use copy() to copy the value to a new address
+
+func Reduce[T any](collection []T, accumulator func(T, T) T, initialValue T) T {
+	var result = initialValue
+	for _, x := range collection {
+		result = accumulator(result, x)
+	}
+	return result
+}
